@@ -150,13 +150,13 @@ def generate_map(data=death_data, data_to_display='deaths'):
             map_data["countyFIPS"].iloc[i] = "0" + map_data["countyFIPS"].iloc[i]
 
     if data_to_display == 'deaths':
-        map_data["Deaths"] = data[data.columns[len(data.columns) - 1]].astype(int)
+        map_data["Deaths"] = data[data.columns[len(data.columns) - 1]]
         scale = (0, 100)
         color_label = "Deaths"
         color_scale = "reds"
 
     elif data_to_display == 'cases':
-        map_data["Cases"] = data[data.columns[len(data.columns) - 1]].astype(int)
+        map_data["Cases"] = data[data.columns[len(data.columns) - 1]]
         scale = (0, 1500)
         color_label = "Cases"
         color_scale = "blues"
