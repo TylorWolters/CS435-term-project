@@ -5,7 +5,6 @@ import pandas as pd
 from geojson import load
 import plotly.express
 
-
 # data: population_data, death_data, or case_file csv file.
 # county: county name,   state: state abbreviation,   comparison: {>,<,>=,<=}
 # quantity: value cases/deaths will be compared against,   time_size: today, week, month,
@@ -175,5 +174,3 @@ def generate_map(data=death_data, data_to_display='deaths'):
     fig.update_layout(height=300, margin={"r": 15, "t": 15, "l": 15, "b": 15})
     fig.show()
 
-
-generate_map()
