@@ -78,9 +78,8 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
             # filters all data for results with a number of occurrences in a timeframe
             if time_distance != None:
                 for i, row in data.iterrows():
-                    case_change = working_title(data.iloc[[i]], time_size, time_distance, "state",
-                                                data["State"].iloc[i],
-                                                county=None)
+                    case_change = working_title(data.iloc[[i]], time_size, time_distance,
+                                                "state", data["State"].iloc[i], county=None)
                     if comparison == ">":
                         if case_change > quantity:
                             results = results.append(data.iloc[i])
