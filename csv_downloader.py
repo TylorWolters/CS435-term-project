@@ -5,7 +5,7 @@ known_cases = 'https://static.usafacts.org/public/data/covid-19/covid_confirmed_
 known_deaths = 'https://static.usafacts.org/public/data/covid-19/covid_deaths_usafacts.csv'
 country_populations = 'https://static.usafacts.org/public/data/covid-19/covid_county_population_usafacts.csv'
 
-# Download file 
+# Download file function
 def download_file(url, filename=''):
     try:
 
