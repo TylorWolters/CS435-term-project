@@ -17,10 +17,6 @@ frame.pack()
     
 global df#Data Frame variable
 
-def cases_show(cases_label):
-
-    #
-
 def onclick(args):
 
     if args == 0:
@@ -31,26 +27,29 @@ def onclick(args):
         stateGet = get(stateVar)
         countyGet = get(countyVar)
         #search function
-        searchFunc(stateGet, countyGet)
+        search_df(stateGet, countyGet)
+        generate_map(search_df(data, data_to_display))
 
     elif args == 2:
         gui_title.countyEntry.delete(0, END)
         gui_title.stateEntry.delete(0, END)
     
     elif args == 3:
-        exportCSV_filepath = filedialog.asksaveasfilename(defaultextension = '.csv'
-        df.to_csv(exportCSV_filepath, index = false, header = true)
+        export_data(data, "json")
 
     elif args == 4:
-        exportJSON_filepath = filedialog.asksaveasfilename(defaultextension = '.json'
-        df.to_json(exportJSON_filepath, index = false, header = true)
+        export_data(data, "csv")
+
+    elif args == 5:
+        generate_map()
 
 #buttons
 close_button = Button(gui_title, text = "Close", command = lambda:onclick(0))
 search_button = Button(gui_title, text = "Search", command = lambda:onclick(1))
 clear_button = Button(gui_title, text = "Clear", command = lambda: onclick(2))
 downloadJson_button = Button(gui_title, text = "Download JSON", command = lambda:onclick(3))
-downloadCSV_button = Button(gui_title, text = "Dwonload CSv", command = lambda:onclick(4))
+downloadCSV_button = Button(gui_title, text = "Download CSV", command = lambda:onclick(4))
+gernerateMap_button = Button(gui_title, text = "Generate Map", command = lambda: onclick(5))
 
 #labels so user knows where to input county and state
 stateLabel = Label(gui_title, text = State, relief = RAISED)
@@ -69,6 +68,7 @@ countyEntry = Entry(gui_title, textvariable = "countyVar",bd =2)
 countyEntry.pack()
 
 search_button.pack()
+generateMap_button.pack()
 clear_button.pack()
 close_button.pack()
 
