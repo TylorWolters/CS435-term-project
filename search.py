@@ -26,18 +26,20 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
         # comparison of data within an individual state
         if state != None:
             if time_distance != None:
-
+                quantity_list = []
                 for i, row in results.iterrows():
-                    case_change = working_title(results.iloc[[i]], time_size, time_distance, "county",
+                    case_change = date_specified_numbers(results.iloc[[i]], time_size, time_distance, "county",
                                                 results["State"].iloc[i], results["county_name"].iloc[i])
 
                     # filters state data for results with a number of occurrences in a given timeframe
                     if comparison == ">":
                         if case_change > quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
 
                     elif comparison == "<":
                         if case_change < quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
 
                     elif comparison == ">=":
@@ -46,7 +48,10 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
 
                     elif comparison == "<=":
                         if case_change <= quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
+
+                temp_df["Change since date"] = quantity_list
 
             # filters state level data for results with a number of occurrences
             else:
@@ -77,24 +82,32 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
 
             # filters all data for results with a number of occurrences in a timeframe
             if time_distance != None:
+                quantity_list = []
                 for i, row in data.iterrows():
-                    case_change = working_title(data.iloc[[i]], time_size, time_distance,
+                    case_change = date_specified_numbers(data.iloc[[i]], time_size, time_distance,
                                                 "state", data["State"].iloc[i], county=None)
                     if comparison == ">":
                         if case_change > quantity:
-                            results = results.append(data.iloc[i])
+                            quantity_list.append(case_change)
+                            results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == "<":
                         if case_change < quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == ">=":
                         if case_change >= quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == "<=":
                         if case_change <= quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
+
+                results["Change in last " + str(time_distance) + " " + time_size + "s"] = quantity_list
+                print(results)
 
             # filters all data for results with a number of occurrences
             else:
@@ -149,13 +162,13 @@ def generate_map(data=death_data, data_to_display='deaths'):
             map_data["countyFIPS"].iloc[i] = "0" + map_data["countyFIPS"].iloc[i]
 
     if data_to_display == 'deaths':
-        map_data["Deaths"] = data[data.columns[len(data.columns) - 1]]
+        map_data["Deaths"] = data[data.columns[len(data.columns) - 1]].astype(int)
         scale = (0, 100)
         color_label = "Deaths"
         color_scale = "reds"
 
     elif data_to_display == 'cases':
-        map_data["Cases"] = data[data.columns[len(data.columns) - 1]]
+        map_data["Cases"] = data[data.columns[len(data.columns) - 1]].astype(int)
         scale = (0, 1500)
         color_label = "Cases"
         color_scale = "blues"
