@@ -26,7 +26,7 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
         # comparison of data within an individual state
         if state != None:
             if time_distance != None:
-
+                quantity_list = []
                 for i, row in results.iterrows():
                     case_change = date_specified_numbers(results.iloc[[i]], time_size, time_distance, "county",
                                                 results["State"].iloc[i], results["county_name"].iloc[i])
@@ -34,10 +34,12 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
                     # filters state data for results with a number of occurrences in a given timeframe
                     if comparison == ">":
                         if case_change > quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
 
                     elif comparison == "<":
                         if case_change < quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
 
                     elif comparison == ">=":
@@ -46,7 +48,10 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
 
                     elif comparison == "<=":
                         if case_change <= quantity:
+                            quantity_list.append(case_change)
                             temp_df = temp_df.append(results.iloc[i], ignore_index=True)
+
+                temp_df["Change since date"] = quantity_list
 
             # filters state level data for results with a number of occurrences
             else:
@@ -77,24 +82,32 @@ def search_df(data, county=None, state=None, comparison=None, quantity=None, tim
 
             # filters all data for results with a number of occurrences in a timeframe
             if time_distance != None:
+                quantity_list = []
                 for i, row in data.iterrows():
                     case_change = date_specified_numbers(data.iloc[[i]], time_size, time_distance,
                                                 "state", data["State"].iloc[i], county=None)
                     if comparison == ">":
                         if case_change > quantity:
-                            results = results.append(data.iloc[i])
+                            quantity_list.append(case_change)
+                            results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == "<":
                         if case_change < quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == ">=":
                         if case_change >= quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
 
                     elif comparison == "<=":
                         if case_change <= quantity:
+                            quantity_list.append(case_change)
                             results = results.append(data.iloc[i], ignore_index=True)
+
+                results["Change in last " + str(time_distance) + " " + time_size + "s"] = quantity_list
+                print(results)
 
             # filters all data for results with a number of occurrences
             else:
