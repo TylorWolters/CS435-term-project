@@ -1,87 +1,111 @@
-#UI for software engineering project
+# UI for software engineering project
 
-import Tkinter as tk
-from Tkinter import *
-import pandas as pd
-from pandas import *
-import numpy as np
-from search import *
+from tkinter import *
+from csv_downloader import *
 from csv_parser import *
+from search import *
 
-#Title of UI
+# Title of UI
 gui_title = Tk()
+gui_title.title("Covid Visualizer")
 
-#frame
-frame = Frame(gui_title)
-frame.pack()
-    
-global df#Data Frame variable
+# window grid
+gui_title.rowconfigure(0, minsize=50)
+gui_title.columnconfigure([0, 1], minsize=50)
 
-def onclick(args):
+# to see which radio button is selected when search/ gets a value
+radio_value = IntVar()
 
-    if args == 0:
-        close()
+global data  # Data Frame variable
+global label  # tracks which data set is being used for the map
 
-    elif args == 1:
-        #entry getters
-        stateGet = get(stateVar)
-        countyGet = get(countyVar)
-        #search function
-        search_df(stateGet, countyGet)
-        generate_map(search_df(data, data_to_display))
+
+def radio_data(args):
+    # radio button data
+    global data
+    global label
+
+    if args == 1:
+        data = case_data
+        label = "cases"
 
     elif args == 2:
-        gui_title.countyEntry.delete(0, END)
-        gui_title.stateEntry.delete(0, END)
-    
+        data = death_data
+        label = "deaths"
+
+    else:
+        data = population_data
+
+
+def onclick(args):
+    global data
+    global label
+
+    if args == 0:
+        # close
+        gui_title.destroy()
+
+    elif args == 1:
+        # search function
+
+        if (len(stateEntry.get()) == 0):
+
+            if (len(countyEntry.get()) == 0):
+
+                generate_map(data, label)
+
+            else:
+                pass  # search function requires a state entry to search for a county
+
+        elif (len(countyEntry.get()) == 0):
+
+            data = search_df(data, state=stateEntry.get())
+            generate_map(data, label)
+
+        else:
+            data = search_df(data, state=stateEntry.get(), county=countyEntry.get())
+            generate_map(data, label)
+
+    elif args == 2:
+        countyEntry.delete(0, END)
+        stateEntry.delete(0, END)
+        radio_value.set(0)
+
     elif args == 3:
         export_data(data, "json")
 
     elif args == 4:
         export_data(data, "csv")
 
-    elif args == 5:
-        generate_map()
 
-#buttons
-close_button = Button(gui_title, text = "Close", command = lambda:onclick(0))
-search_button = Button(gui_title, text = "Search", command = lambda:onclick(1))
-clear_button = Button(gui_title, text = "Clear", command = lambda: onclick(2))
-downloadJson_button = Button(gui_title, text = "Download JSON", command = lambda:onclick(3))
-downloadCSV_button = Button(gui_title, text = "Download CSV", command = lambda:onclick(4))
-gernerateMap_button = Button(gui_title, text = "Generate Map", command = lambda: onclick(5))
+# buttons
+close_button = Button(gui_title, text="Close", command=lambda: onclick(0))
+search_button = Button(gui_title, text="Search", command=lambda: onclick(1))
+clear_button = Button(gui_title, text="Clear", command=lambda: onclick(2))
+downloadJson_button = Button(gui_title, text="Download JSON", command=lambda: onclick(3))
+downloadCSV_button = Button(gui_title, text="Download CSV", command=lambda: onclick(4))
+case_radio_button = Radiobutton(gui_title, text="Cases", variable=radio_value, value=1, command=lambda: radio_data(1))
+death_radio_button = Radiobutton(gui_title, text="Deaths", variable=radio_value, value=2, command=lambda: radio_data(2))
 
-#labels so user knows where to input county and state
-stateLabel = Label(gui_title, text = State, relief = RAISED)
-stateLabell.pack()
-countyLabel = Label(gui_title, text = County,relief = RAISED)
-countyLabell.pack()
+# labels so user knows where to input county and state
+stateLabel = Label(gui_title, text="State")
+stateLabel.grid(row=1, column=1, sticky=E)
+countyLabel = Label(gui_title, text="County")
+countyLabel.grid(row=2, column=1, sticky=E)
 
-#text variables for user entires to be able to return
-stateVar = StringVar()
-countyVar = StringVar()
+# user entries
+stateEntry = Entry(gui_title)
+stateEntry.grid(row=1, column=2)
+countyEntry = Entry(gui_title)
+countyEntry.grid(row=2, column=2)
 
-#user entries
-stateEntry = Entry(gui_title, textvariable = "stateVar",bd =2)
-stateEntry.pack()
-countyEntry = Entry(gui_title, textvariable = "countyVar",bd =2)
-countyEntry.pack()
-
-search_button.pack()
-generateMap_button.pack()
-clear_button.pack()
-close_button.pack()
-
-#shows the information that was looked up
-cases_label = Label(gui_title, text = 'Total Cases')
-cases_label.pack()
-deaths_label = Label(gui_title, text = 'Total Deaths')
-deaths_label.pack()
-date_label = Label(gui_title, text = 'todays_date')
-date_label.pack()
-
-
-downloadJson_button.pack()
-downloadJson_button.pack()
+# button positions
+search_button.grid(row=1, column=5)
+clear_button.grid(row=2, column=5)
+downloadJson_button.grid(row=18, column=2)
+downloadCSV_button.grid(row=18, column=4)
+close_button.grid(row=20, column=3)
+case_radio_button.grid(row=1, column=3)
+death_radio_button.grid(row=2, column=3)
 
 gui_title.mainloop()
