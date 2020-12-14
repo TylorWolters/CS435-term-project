@@ -219,9 +219,6 @@ def generate_map(data=death_data, data_to_display='deaths'):
                                     color_continuous_scale=color_scale, featureidkey='properties.GEOID',
                                     scope="usa", range_color=scale, hover_data=["county_name"])
 
-    # adjusts the map's size and margins
-    fig.update_layout(height=300, margin={"r": 15, "t": 15, "l": 15, "b": 15})
-
     # overlays state outlines onto the map, visibility is limited if displaying all counties due to overlap
     fig.update_geos(
         visible=False, resolution=110, scope="usa",
